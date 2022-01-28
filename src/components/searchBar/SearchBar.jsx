@@ -13,7 +13,7 @@ import { compareByName } from '../../utils/comparers';
  * @returns {JSX.Element}
  * @constructor
  */
-export const SearchBar = ({ setLoading }) => {
+export const SearchBar = ({ setLoading, selectedCategories }) => {
 
   const dispatch = useDispatch();
 
@@ -56,7 +56,7 @@ export const SearchBar = ({ setLoading }) => {
       />
       <Input
         type='text'
-        placeholder='Search countries by name'
+        placeholder='Search countries'
         boxShadow={'0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)'}
         onChange={(e) => performSearch(e.currentTarget.value)}
       />

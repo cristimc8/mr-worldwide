@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
-  ChakraProvider,
+  Box,
+  ChakraProvider, VStack,
 } from '@chakra-ui/react';
 import './App.css';
 import { CountryCard } from './components/countryCard/CountryCard';
@@ -24,8 +25,10 @@ function App() {
           initialColorMode: 'light',
         },
       })}>
-        <SearchBoxContainer setLoading={setCountriesLoading}/>
-        <CountriesContainer isLoading={countriesLoading}/>
+        <VStack padding={8} spacing={5}>
+          <SearchBoxContainer setLoading={setCountriesLoading}/>
+          <CountriesContainer isLoading={countriesLoading}/>
+        </VStack>
       </ChakraProvider>
     </Provider>
   );
