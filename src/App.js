@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ChakraProvider,
 } from '@chakra-ui/react';
@@ -9,9 +9,13 @@ import { CountriesContainer } from './components/containers/CountriesContainer';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import { SearchBar } from './components/searchBar/SearchBar';
+import { SearchBoxContainer } from './components/containers/SearchBoxContainer';
 
 
 function App() {
+
+  const [countriesLoading, setCountriesLoading] = useState(false);
+
   return (
     <Provider store={store}>
       <ChakraProvider theme={extendTheme({
@@ -20,8 +24,8 @@ function App() {
           initialColorMode: 'light',
         },
       })}>
-        <SearchBar />
-        <CountriesContainer />
+        <SearchBoxContainer setLoading={setCountriesLoading}/>
+        <CountriesContainer isLoading={countriesLoading}/>
       </ChakraProvider>
     </Provider>
   );
