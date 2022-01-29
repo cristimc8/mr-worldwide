@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Box,
   Button,
   Flex,
   HStack, Input, InputGroup, InputLeftElement,
@@ -27,16 +28,33 @@ import { loadRegions } from '../../redux/actions/regionsActions';
 import { SearchIcon } from '@chakra-ui/icons';
 import { selectLanguages } from '../../redux/selectors/languagesSelectors';
 import { selectTimeZones } from '../../redux/selectors/timeZoneSelectors';
+import { selectCurrencies, selectCurrenciesSpread } from '../../redux/selectors/currenciesSelector';
+import {
+  setFilteredLanguages,
+  setFilteredRegions, setUserFilteredCurrencies,
+  setUserFilteredLanguages, setUserFilteredPopulationRange,
+  setUserFilteredRegions, setUserFilteredTimeZones,
+} from '../../redux/actions/filtersActions';
 
-export const FiltersPopupContainer = ({ filtersVisible, setFiltersVisibles }) => {
+export const FiltersPopupContainer = ({ filtersVisible, setFiltersVisibles, setNeedsUpdate }) => {
+
+  const dispatch = useDispatch();
 
   const allLanguages = useSelector(selectLanguages);
   const regions = useSelector(selectRegions);
   const timeZones = useSelector(selectTimeZones);
+  const currencies = useSelector(selectCurrenciesSpread);
 
   const [selectedRegions, setSelectedRegions] = useState([]);
   const [filteredLanguages, setFilteredLanguages] = useState([]);
 
+  const [filteredCurrencies, setFilteredCurrencies] = useState([]);
+
+  const [selectedTimezone, setSelectedTimezone] = useState(null);
+  /**
+   *
+   */
+  const [selectedCurrencies, setSelectedCurrencies] = useState([]);
   /**
    *
    */
@@ -44,7 +62,7 @@ export const FiltersPopupContainer = ({ filtersVisible, setFiltersVisibles }) =>
   /**
    * The range object is a 2 values array
    */
-  const [range, setRange] = useState([]);
+  const [range, setRange] = useState([0, 1500000000]);
 
   const selectLanguage = (lang) => {
     if (selectedLanguages.includes(lang)) {
@@ -53,7 +71,17 @@ export const FiltersPopupContainer = ({ filtersVisible, setFiltersVisibles }) =>
     } else {
       setSelectedLanguages([...selectedLanguages, lang]);
     }
-  }
+  };
+
+  const selectCurrency = (curr) => {
+    if (selectedCurrencies.includes(curr)) {
+      let copyOfSelected = selectedCurrencies.filter(currency => currency !== curr);
+      setSelectedCurrencies(copyOfSelected);
+    } else {
+      setSelectedCurrencies([...selectedCurrencies, curr]);
+    }
+  };
+
 
   // If we don't have the regions cached, we fetch them now
   useEffect(() => {
@@ -81,7 +109,7 @@ export const FiltersPopupContainer = ({ filtersVisible, setFiltersVisibles }) =>
             justify={'center'}
             align={'center'}
           >
-            <Modal isCentered isOpen={filtersVisible} onClose={() => {
+            <Modal size={'2xl'} isOpen={filtersVisible} onClose={() => {
               setFiltersVisibles(false);
             }}>
               <ModalOverlay />
@@ -99,11 +127,13 @@ export const FiltersPopupContainer = ({ filtersVisible, setFiltersVisibles }) =>
                         <SkeletonCircle isLoaded={regions.length !== 0} />
                         <SkeletonCircle isLoaded={regions.length !== 0} />
                       </HStack>
-                      {
-                        regions.length > 0 && (
-                          <BadgeGroup all={regions} selected={selectedRegions} setSelected={setSelectedRegions} />
-                        )
-                      }
+                      <Box width={300}>
+                        {
+                          regions.length > 0 && (
+                            <BadgeGroup all={regions} selected={selectedRegions} setSelected={setSelectedRegions} />
+                          )
+                        }
+                      </Box>
                     </Flex>
                   </Section>
                   <Section>
@@ -121,6 +151,9 @@ export const FiltersPopupContainer = ({ filtersVisible, setFiltersVisibles }) =>
                       <RangeSliderThumb index={0} />
                       <RangeSliderThumb index={1} />
                     </RangeSlider>
+                    <Text
+                      color={'gray.600'}
+                    >From: {range[0] ?? 0} to: {range[1] ?? 1500000000}</Text>
                   </Section>
                   <Section>
                     <SectionHeader text={'By language'} />
@@ -156,13 +189,47 @@ export const FiltersPopupContainer = ({ filtersVisible, setFiltersVisibles }) =>
                   </Section>
 
                   <Section>
-                    <SectionHeader text={'By time zone'}/>
-                    <Select placeholder='Select time zone'>
+                    <SectionHeader text={'By currency'} />
+                    <InputGroup
+                      maxW={300}
+                    >
+                      <InputLeftElement
+                        pointerEvents='none'
+                        children={<SearchIcon color='gray.300' />}
+                      />
+                      <Input
+                        type='text'
+                        placeholder='Currency'
+                        className={'zShadow'}
+                        onChange={(e) => {
+                          if (e.currentTarget.value === '') setFilteredCurrencies([]);
+                          else
+                            setFilteredCurrencies(currencies.filter(l => l.includes(e.currentTarget.value)));
+                        }}
+                      />
+                    </InputGroup>
+                    <VStack>
+                      {
+                        filteredCurrencies.slice(0, 3).map((fl, i) => {
+                          return (
+                            <Suggestion text={fl} key={i} selector={selectCurrency} />
+                          );
+                        })
+                      }
+                    </VStack>
+                    <BadgeGroup all={selectedCurrencies} setSelected={setSelectedCurrencies} selected={selectedCurrencies}
+                                killOnSelect={true} />
+                  </Section>
+
+                  <Section>
+                    <SectionHeader text={'By time zone'} />
+                    <Select placeholder='Select time zone'
+                            onChange={(e) => {setSelectedTimezone(e.currentTarget.value)}}>
                       {
                         timeZones.map((tz, i) => {
                           return (
                             <option value={tz} key={i}>{tz}</option>
-                          )
+                          );
                         })
                       }
                     </Select>
@@ -174,6 +241,12 @@ export const FiltersPopupContainer = ({ filtersVisible, setFiltersVisibles }) =>
                   <Button variant='ghost'>Cancel</Button>
                   <Button colorScheme='blue' mr={3} onClick={() => {
                     setFiltersVisibles(false);
+                    dispatch(setUserFilteredRegions(selectedRegions))
+                    dispatch(setUserFilteredCurrencies(selectedCurrencies))
+                    dispatch(setUserFilteredLanguages(selectedLanguages))
+                    dispatch(setUserFilteredTimeZones(selectedTimezone))
+                    dispatch(setUserFilteredPopulationRange(range))
+                    setNeedsUpdate(true)
                   }}>
                     Apply
                   </Button>
@@ -199,7 +272,9 @@ const Suggestion = ({ text, selector }) => {
       borderRadius={2}
       padding={5}
       cursor={'pointer'}
-      onClick={() => {selector(text)}}
+      onClick={() => {
+        selector(text);
+      }}
     >
       <Text fontWeight={'semibold'} color={'gray.700'}>{text}</Text>
     </Flex>

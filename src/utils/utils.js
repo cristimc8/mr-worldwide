@@ -8,7 +8,7 @@ export const formatCountriesData = (rawData) => rawData.map(country => {
     language: country.languages ? country.languages[Object.keys(country.languages)[0]] : '?',
     timeZone: country['timezones'][0],
     currencies: country.currencies ?
-      country.currencies.map(cur => country.currencies[cur].name) : "?"
+      Object.keys(country.currencies).map(cur => country.currencies[cur].name) : "?"
   };
 });
 

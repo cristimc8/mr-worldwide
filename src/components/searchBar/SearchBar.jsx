@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../../origins/api';
-import { loadCountries } from '../../redux/actions/loadedCountriesActions';
-import { useDispatch } from 'react-redux';
+import { loadCountries, setCurrentFilteredCountries } from '../../redux/actions/loadedCountriesActions';
+import { useDispatch, useSelector } from 'react-redux';
 import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import { fetchCountriesByApiCall, formatCountriesData } from '../../utils/utils';
@@ -10,6 +10,12 @@ import { loadRegions } from '../../redux/actions/regionsActions';
 import { loadLanguages } from '../../redux/actions/languagesActions';
 import { loadTimeZones } from '../../redux/actions/timeZoneActions';
 import { loadCurrencies } from '../../redux/actions/currenciesActions';
+import {
+  selectUserFilteredCurrencies,
+  selectUserFilteredLanguages,
+  selectUserFilteredPopulationRange,
+  selectUserFilteredRegions, selectUserFilteredState, selectUserFilteredTimeZone,
+} from '../../redux/selectors/filtersSelectors';
 
 /**
  *
@@ -17,7 +23,7 @@ import { loadCurrencies } from '../../redux/actions/currenciesActions';
  * @returns {JSX.Element}
  * @constructor
  */
-export const SearchBar = ({ setLoading, selectedCategories }) => {
+export const SearchBar = ({ setLoading, selectedCategories, needsUpdate, setNeedsUpdate }) => {
 
   const dispatch = useDispatch();
 
@@ -25,23 +31,46 @@ export const SearchBar = ({ setLoading, selectedCategories }) => {
 
   const [timer, setTimer] = useState(null);
 
+  const userFilteredState = useSelector(selectUserFilteredState)
+  const selectedRegions = useSelector(selectUserFilteredRegions);
+  const selectedPopulationRange = useSelector(selectUserFilteredPopulationRange);
+  const selectedLanguages = useSelector(selectUserFilteredLanguages);
+  const selectedCurrencies = useSelector(selectUserFilteredCurrencies);
+  const selectedTimeZone = useSelector(selectUserFilteredTimeZone);
+
+  useEffect(() => {
+    if(selectedRegions.length !== 0 || selectedPopulationRange[0] !== 0 || selectedPopulationRange[1] !== 1500000000
+    || selectedLanguages.length !== 0 || selectedCurrencies.length !== 0 || selectedTimeZone !== null){
+      setLoading(true);
+    }
+    console.log(userFilteredState)
+    console.log(selectedTimeZone)
+    console.log(selectedPopulationRange)
+    console.log(selectedTimeZone)
+    console.log(selectedLanguages)
+    console.log(selectedCurrencies)
+
+  }, [selectedRegions, selectedPopulationRange,
+    selectedCurrencies, selectedLanguages, selectedTimeZone]);
+
   useEffect(() => {
     // load all countries for first time -- no filters
     fetchCountriesByApiCall(api.countries.all, compareByName)
       .then(countries => {
         dispatch(loadCountries(countries));
-        dispatch(loadRegions([...(new Set(countries.map(cData => cData.region)))]))
-        dispatch(loadLanguages([...(new Set(countries.map(cData => cData.language.toLowerCase())))]))
-        dispatch(loadTimeZones([...(new Set(countries.map(cData => cData.timeZone)))]))
-        dispatch(loadCurrencies([...(new Set(countries.map(cData => [...cData.currencies])))]))
-      })
+        dispatch(setCurrentFilteredCountries(countries));
+        dispatch(loadRegions([...(new Set(countries.map(cData => cData.region)))]));
+        dispatch(loadLanguages([...(new Set(countries.map(cData => cData.language.toLowerCase())))]));
+        dispatch(loadTimeZones([...(new Set(countries.map(cData => cData.timeZone)))]));
+        dispatch(loadCurrencies([...(new Set(countries.map(cData => [...cData.currencies])))]));
+      });
   }, []);
 
   const searchByQuery = async (query) => {
     let apiLocation = `${api.countries.byName}/${query}`;
-    if(query === "") apiLocation = api.countries.all;
-    let countries = await fetchCountriesByApiCall(apiLocation, compareByName)
-    dispatch(loadCountries(countries))
+    if (query === '') apiLocation = api.countries.all;
+    let countries = await fetchCountriesByApiCall(apiLocation, compareByName);
+    dispatch(loadCountries(countries));
     setLoading(false);
   };
 
@@ -50,8 +79,8 @@ export const SearchBar = ({ setLoading, selectedCategories }) => {
     // Using a simple debounce so we don't drown the server
     clearTimeout(timer);
     setTimer(setTimeout(() => {
-      searchByQuery(query)
-    }, debounceTime))
+      searchByQuery(query);
+    }, debounceTime));
   };
 
   return (

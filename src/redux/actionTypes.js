@@ -1,6 +1,7 @@
 export const actionTypes = {
   countries: {
     loadCountries: 'LOAD_COUNTRIES',
+    loadCurrentFilteredCountries: 'LOAD_FILTERED_COUNTRIES',
   },
   regions: {
     loadRegions: 'LOAD_REGIONS',
@@ -19,6 +20,6 @@ export const actionTypes = {
     selectCurrencies: 'SELECT_CURRENCIES',
     selectTimeZones: 'SELECT_TIMEZONES',
     selectLanguages: 'SELECT_LANGUAGES',
-    selectPopulationRange: 'SELECT_POPULATION_RANGE'
+    selectPopulationRange: 'SELECT_POPULATION_RANGE',
   },
 };

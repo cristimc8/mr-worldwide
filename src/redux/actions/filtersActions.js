@@ -1,16 +1,16 @@
 import { actionTypes } from '../actionTypes';
 
-export const selectRegions = (regions) => ({
+export const setUserFilteredRegions = (regions) => ({
   type: actionTypes.filters.selectRegions,
   payload: regions
 })
 
-export const setFilteredLanguages = (languages) => ({
+export const setUserFilteredLanguages = (languages) => ({
   type: actionTypes.filters.selectLanguages,
   payload: languages
 })
 
-export const setFilteredTimeZones = (timeZones) => ({
+export const setUserFilteredTimeZones = (timeZones) => ({
   type: actionTypes.filters.selectTimeZones,
   payload: timeZones
 })
@@ -20,7 +20,12 @@ export const setFilteredTimeZones = (timeZones) => ({
  * @param currencies
  * @returns {{payload, type: string}}
  */
-export const setFilteredCurrencies = (currencies) => ({
+export const setUserFilteredCurrencies = (currencies) => ({
   type: actionTypes.filters.selectCurrencies,
   payload: currencies
+})
+
+export const setUserFilteredPopulationRange = (range) => ({
+  type: actionTypes.filters.selectPopulationRange,
+  payload: range
 })
