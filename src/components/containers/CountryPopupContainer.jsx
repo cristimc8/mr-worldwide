@@ -60,7 +60,7 @@ export const CountryPopupContainer = ({ passedCountry, modalOpen, setModalOpen, 
             <Box className={'coverImg'} width={'100%'} position={'absolute'} height={350} filter={'blur(10px)'}>
               <Image src={passedCountry.flag} />
             </Box>
-            <Image src={passedCountry.flag} mt={10} zIndex={999} className={'zShadow'} />
+            <Image src={passedCountry.flag} mt={10} zIndex={999} className={'bigShadow'} />
           </Flex>
 
           {/*inject rest here*/}
