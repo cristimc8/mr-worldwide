@@ -114,7 +114,7 @@ export const CountryPopupContainer = ({ passedCountry, modalOpen, setModalOpen, 
                             setCurrentCountry(neighbours.at(i))
                           }}
                         >
-                          {neighbours.at(i).emoji} {neighbours.at(i).name}
+                          {neighbours[i] && neighbours.at(i).emoji} {neighbours[i] && neighbours.at(i).name}
                         </Text>
                       )}
                     </>
