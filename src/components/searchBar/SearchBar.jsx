@@ -6,6 +6,10 @@ import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import { fetchCountriesByApiCall, formatCountriesData } from '../../utils/utils';
 import { compareByName } from '../../utils/comparers';
+import { loadRegions } from '../../redux/actions/regionsActions';
+import { loadLanguages } from '../../redux/actions/languagesActions';
+import { loadTimeZones } from '../../redux/actions/timeZoneActions';
+import { loadCurrencies } from '../../redux/actions/currenciesActions';
 
 /**
  *
@@ -26,6 +30,10 @@ export const SearchBar = ({ setLoading, selectedCategories }) => {
     fetchCountriesByApiCall(api.countries.all, compareByName)
       .then(countries => {
         dispatch(loadCountries(countries));
+        dispatch(loadRegions([...(new Set(countries.map(cData => cData.region)))]))
+        dispatch(loadLanguages([...(new Set(countries.map(cData => cData.language.toLowerCase())))]))
+        dispatch(loadTimeZones([...(new Set(countries.map(cData => cData.timeZone)))]))
+        dispatch(loadCurrencies([...(new Set(countries.map(cData => [...cData.currencies])))]))
       })
   }, []);
 

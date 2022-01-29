@@ -3,7 +3,7 @@ import { actionTypes } from '../actionTypes';
 const initialState = {
   /**
    * Holding:
-   * Flag, Name, Capital, Region, Population
+   * Flag, Name, Capital, Region, Population, Language, timeZone, currencies array
    * For any other info fetch by id/name
    */
   loadedCountries: []

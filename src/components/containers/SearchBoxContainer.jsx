@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import { SearchBar } from '../searchBar/SearchBar';
-import { Badge, Box, Flex } from '@chakra-ui/react';
+import { Badge, Box, Flex, Icon, IconButton } from '@chakra-ui/react';
 import { searchCategory } from '../searchBar/searchCategories';
+import {VscSettings} from "react-icons/vsc"
+import '../generics/generics.css'
+
 
 /**
  *
  * @param setLoading {(boolean) => void}
+ * @param filtersVisible
+ * @param setFiltersVisible
  * @returns {JSX.Element}
  * @constructor
  */
-export const SearchBoxContainer = ({ setLoading }) => {
-  const [selectedCategories, setSelectedCategories] = useState([]);
+export const SearchBoxContainer = ({ setLoading, filtersVisible, setFiltersVisible }) => {
+  const [selectedCategories, setSelectedCategories] = useState([...Object.keys(searchCategory).filter(k => searchCategory[k] === searchCategory.name)]);
 
   return (
     <Flex
@@ -21,7 +26,16 @@ export const SearchBoxContainer = ({ setLoading }) => {
       align={'center'}
       gap={3}
     >
-      <SearchBar setLoading={setLoading} selectedCategories={selectedCategories} />
+      <Flex gap={4}>
+        <SearchBar setLoading={setLoading} selectedCategories={selectedCategories} />
+        <IconButton
+          as={VscSettings}
+          aria-label={"Filters"}
+          cursor={"pointer"}
+          backgroundColor={"transparent"}
+          onClick={() => {setFiltersVisible(!filtersVisible)}}
+        />
+      </Flex>
       <Box width={300}>
         <BadgeGroup selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories} />
       </Box>
@@ -58,12 +72,13 @@ const BadgeGroup = ({ selectedCategories, setSelectedCategories }) => {
         return (
           <Badge
             key={i}
-            colorScheme={isSelected(cat) ? 'blue' : 'cyan'}
+            colorScheme={isSelected(cat) ? 'green' : 'blue'}
             paddingInline={3}
             paddingBlock={1}
             fontSize={12}
             cursor={'pointer'}
             borderRadius={'full'}
+            userSelect={'none'}
             onClick={() => {
               selectCategory(cat);
             }}
