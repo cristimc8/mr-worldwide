@@ -19,8 +19,6 @@ function App() {
   const [countriesLoading, setCountriesLoading] = useState(false);
   const [filtersVisible, setFiltersVisible] = useState(false);
 
-  const [needsUpdate, setNeedsUpdate] = useState(false)
-
   return (
     <Provider store={store}>
       <ChakraProvider theme={extendTheme({
@@ -29,15 +27,15 @@ function App() {
           initialColorMode: 'light',
         },
       })}>
-        <FiltersPopupContainer setNeedsUpdate={setNeedsUpdate} filtersVisible={filtersVisible} setFiltersVisibles={setFiltersVisible} />
+        <FiltersPopupContainer filtersVisible={filtersVisible} setFiltersVisibles={setFiltersVisible} />
 
         <VStack
           padding={8}
           spacing={5}
         >
-          <SearchBoxContainer needsUpdate={needsUpdate} setNeedsUpdate={setNeedsUpdate} setLoading={setCountriesLoading} filtersVisible={filtersVisible}
+          <SearchBoxContainer setLoading={setCountriesLoading} filtersVisible={filtersVisible}
                               setFiltersVisible={setFiltersVisible} />
-          <CountriesContainer isLoading={countriesLoading} />
+          <CountriesContainer isLoading={countriesLoading} setLoading={setCountriesLoading} />
         </VStack>
       </ChakraProvider>
     </Provider>

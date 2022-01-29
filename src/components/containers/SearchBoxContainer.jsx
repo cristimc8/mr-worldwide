@@ -14,7 +14,7 @@ import '../generics/generics.css'
  * @returns {JSX.Element}
  * @constructor
  */
-export const SearchBoxContainer = ({ setLoading, filtersVisible, setFiltersVisible, needsUpdate, setNeedsUpdate }) => {
+export const SearchBoxContainer = ({ setLoading, filtersVisible, setFiltersVisible }) => {
   const [selectedCategories, setSelectedCategories] = useState([...Object.keys(searchCategory).filter(k => searchCategory[k] === searchCategory.name)]);
 
   return (
@@ -27,7 +27,7 @@ export const SearchBoxContainer = ({ setLoading, filtersVisible, setFiltersVisib
       gap={3}
     >
       <Flex gap={4}>
-        <SearchBar needsUpdate={needsUpdate} setNeedsUpdate={setNeedsUpdate} setLoading={setLoading} selectedCategories={selectedCategories} />
+        <SearchBar setLoading={setLoading} selectedCategories={selectedCategories} />
         <IconButton
           as={VscSettings}
           aria-label={"Filters"}

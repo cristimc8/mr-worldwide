@@ -16,6 +16,7 @@ import {
   selectUserFilteredPopulationRange,
   selectUserFilteredRegions, selectUserFilteredState, selectUserFilteredTimeZone,
 } from '../../redux/selectors/filtersSelectors';
+import { selectFilteredCountries, selectLoadedCountries } from '../../redux/selectors/loadedCountriesSelector';
 
 /**
  *
@@ -23,7 +24,7 @@ import {
  * @returns {JSX.Element}
  * @constructor
  */
-export const SearchBar = ({ setLoading, selectedCategories, needsUpdate, setNeedsUpdate }) => {
+export const SearchBar = ({ setLoading, selectedCategories }) => {
 
   const dispatch = useDispatch();
 
@@ -31,7 +32,8 @@ export const SearchBar = ({ setLoading, selectedCategories, needsUpdate, setNeed
 
   const [timer, setTimer] = useState(null);
 
-  const userFilteredState = useSelector(selectUserFilteredState)
+  const filteredCountries = useSelector(selectLoadedCountries);
+  const userFilteredState = useSelector(selectUserFilteredState);
   const selectedRegions = useSelector(selectUserFilteredRegions);
   const selectedPopulationRange = useSelector(selectUserFilteredPopulationRange);
   const selectedLanguages = useSelector(selectUserFilteredLanguages);
@@ -39,19 +41,38 @@ export const SearchBar = ({ setLoading, selectedCategories, needsUpdate, setNeed
   const selectedTimeZone = useSelector(selectUserFilteredTimeZone);
 
   useEffect(() => {
-    if(selectedRegions.length !== 0 || selectedPopulationRange[0] !== 0 || selectedPopulationRange[1] !== 1500000000
-    || selectedLanguages.length !== 0 || selectedCurrencies.length !== 0 || selectedTimeZone !== null){
+    if (selectedRegions.length !== 0 || selectedPopulationRange[0] !== 0 || selectedPopulationRange[1] !== 1500000000
+      || selectedLanguages.length !== 0 || selectedCurrencies.length !== 0 || selectedTimeZone !== null) {
       setLoading(true);
-    }
-    console.log(userFilteredState)
-    console.log(selectedTimeZone)
-    console.log(selectedPopulationRange)
-    console.log(selectedTimeZone)
-    console.log(selectedLanguages)
-    console.log(selectedCurrencies)
+      console.log(filteredCountries);
+      let newFilteredCountries = filteredCountries.filter(cData => {
+        let ok = true;
+        if (userFilteredState.selectedRegions.length > 0) {
+          ok = ok && userFilteredState.selectedRegions.includes(cData.region);
+        }
+        ok = ok && Number(userFilteredState.selectedPopulationRange[0]) <= Number(cData.population)
+          && Number(userFilteredState.selectedPopulationRange[1]) >= Number(cData.population);
 
-  }, [selectedRegions, selectedPopulationRange,
-    selectedCurrencies, selectedLanguages, selectedTimeZone]);
+        if(userFilteredState.selectedLanguages.length > 0) {
+          ok = ok && userFilteredState.selectedLanguages.includes(cData.language.toLowerCase())
+        }
+        if(userFilteredState.selectedCurrencies.length > 0) {
+          let matched = false;
+          if(cData.currencies === "?") return false;
+          cData.currencies.forEach(currency => {
+            if(userFilteredState.selectedCurrencies.includes(currency.toLowerCase())) matched = true;
+          })
+          ok = ok && matched;
+        }
+        if(userFilteredState.selectedTimeZone !== null) {
+          ok = userFilteredState.selectedTimeZone === cData.timeZone;
+        }
+        return ok;
+      });
+      dispatch(setCurrentFilteredCountries(newFilteredCountries))
+    }
+    console.log(userFilteredState);
+  }, [userFilteredState]);
 
   useEffect(() => {
     // load all countries for first time -- no filters
@@ -70,7 +91,7 @@ export const SearchBar = ({ setLoading, selectedCategories, needsUpdate, setNeed
     let apiLocation = `${api.countries.byName}/${query}`;
     if (query === '') apiLocation = api.countries.all;
     let countries = await fetchCountriesByApiCall(apiLocation, compareByName);
-    dispatch(loadCountries(countries));
+    dispatch(setCurrentFilteredCountries(countries));
     setLoading(false);
   };
 

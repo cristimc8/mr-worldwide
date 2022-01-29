@@ -35,11 +35,14 @@ import {
   setUserFilteredLanguages, setUserFilteredPopulationRange,
   setUserFilteredRegions, setUserFilteredTimeZones,
 } from '../../redux/actions/filtersActions';
+import { setCurrentFilteredCountries } from '../../redux/actions/loadedCountriesActions';
+import { selectLoadedCountries } from '../../redux/selectors/loadedCountriesSelector';
 
-export const FiltersPopupContainer = ({ filtersVisible, setFiltersVisibles, setNeedsUpdate }) => {
+export const FiltersPopupContainer = ({ filtersVisible, setFiltersVisibles }) => {
 
   const dispatch = useDispatch();
 
+  const allCountries = useSelector(selectLoadedCountries);
   const allLanguages = useSelector(selectLanguages);
   const regions = useSelector(selectRegions);
   const timeZones = useSelector(selectTimeZones);
@@ -117,6 +120,13 @@ export const FiltersPopupContainer = ({ filtersVisible, setFiltersVisibles, setN
                 <ModalHeader>Available filters</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
+                  <Button onClick={() => {
+                    dispatch(setCurrentFilteredCountries(allCountries))
+                    setSelectedCurrencies([])
+                    setSelectedTimezone(null)
+                    setSelectedRegions([])
+                    setSelectedLanguages([])
+                  }}>Reset filters</Button>
                   {/*Regions*/}
                   <Section>
                     <SectionHeader text={'By region'} />
@@ -246,7 +256,6 @@ export const FiltersPopupContainer = ({ filtersVisible, setFiltersVisibles, setN
                     dispatch(setUserFilteredLanguages(selectedLanguages))
                     dispatch(setUserFilteredTimeZones(selectedTimezone))
                     dispatch(setUserFilteredPopulationRange(range))
-                    setNeedsUpdate(true)
                   }}>
                     Apply
                   </Button>
