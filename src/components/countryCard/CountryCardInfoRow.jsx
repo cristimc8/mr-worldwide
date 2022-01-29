@@ -1,21 +1,21 @@
-import React from "react"
+import React from 'react';
 import { Flex, Icon, Text } from '@chakra-ui/react';
 
-export const CountryCardInfoRow = ({icon, text}) => {
+export const CountryCardInfoRow = ({ icon, text, fontSize = 18 }) => {
 
   return (
     <Flex
-      width={"100%"}
-      justifyContent={"flex-start"}
-      align={"center"}
-      gap={"10px"}
+      width={'100%'}
+      justifyContent={'flex-start'}
+      align={'center'}
+      gap={'10px'}
     >
-      <Icon as={icon}/>
+      <Icon as={icon} />
       <Text
-        fontSize={18}
-        fontWeight={"semibold"}
+        fontSize={fontSize}
+        fontWeight={'semibold'}
         color={'gray.600'}
       >{text}</Text>
     </Flex>
-  )
-}
+  );
+};

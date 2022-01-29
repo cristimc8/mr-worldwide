@@ -8,7 +8,13 @@ export const formatCountriesData = (rawData) => rawData.map(country => {
     language: country.languages ? country.languages[Object.keys(country.languages)[0]] : '?',
     timeZone: country['timezones'][0],
     currencies: country.currencies ?
-      Object.keys(country.currencies).map(cur => country.currencies[cur].name) : "?"
+      Object.keys(country.currencies).map(cur => country.currencies[cur].name) : "?",
+    alpha2: country['cca2'] ?? country['cca3'] ?? "?",
+    latLng: country['latlng'] ?? '?',
+    area: country.area ?? '?',
+    borders: country.borders ? country.borders : [],
+    allLanguages: country.languages ? Object.keys(country.languages).map(l => country.languages[l]) : '?',
+    emoji: country.flag ?? ' '
   };
 });
 
