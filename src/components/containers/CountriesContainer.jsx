@@ -3,6 +3,7 @@ import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
 import { CountryCard } from '../countryCard/CountryCard';
 import { useSelector } from 'react-redux';
 import { selectFilteredCountries, selectLoadedCountries } from '../../redux/selectors/loadedCountriesSelector';
+import { CountryPopupContainer } from './CountryPopupContainer';
 
 /**
  * Gets an array of country components and renders them
@@ -13,10 +14,13 @@ import { selectFilteredCountries, selectLoadedCountries } from '../../redux/sele
 export const CountriesContainer = ({ isLoading, setLoading }) => {
   const countriesData = useSelector(selectFilteredCountries);
 
+  const [modalOpen, setModalOpen] = useState(false);
+  const [currentCountry, setCurrentCountry] = useState(null);
+
   useEffect(() => {
-    setLoading(false)
-    console.log(countriesData)
-  }, [countriesData])
+    setLoading(false);
+    console.log(countriesData);
+  }, [countriesData]);
 
   return (
     <>
@@ -31,16 +35,25 @@ export const CountriesContainer = ({ isLoading, setLoading }) => {
       >
         {countriesData && countriesData.map((cData, i) => {
           return (
-            <CountryCard
-              name={cData.name}
-              capital={cData.capital}
-              region={cData.region}
-              population={cData.population}
-              flag={cData.flag}
-              key={i} />
+            <Box onClick={() => {
+              setModalOpen(true);
+              setCurrentCountry(cData);
+            }}>
+              <CountryCard
+                name={cData.name}
+                capital={cData.capital}
+                region={cData.region}
+                population={cData.population}
+                flag={cData.flag}
+                key={i} />
+            </Box>
+
           );
         })}
       </Box>
+      {currentCountry !== null && (
+        <CountryPopupContainer passedCountry={currentCountry} modalOpen={modalOpen} setModalOpen={setModalOpen} setCurrentCountry={setCurrentCountry} />
+      )}
       {
         isLoading && (
           <Box
