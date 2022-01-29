@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
-  ChakraProvider,
+  Box,
+  ChakraProvider, Flex, VStack,
 } from '@chakra-ui/react';
 import './App.css';
 import { CountryCard } from './components/countryCard/CountryCard';
@@ -10,11 +11,13 @@ import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import { SearchBar } from './components/searchBar/SearchBar';
 import { SearchBoxContainer } from './components/containers/SearchBoxContainer';
+import { FiltersPopupContainer } from './components/containers/FiltersPopupContainer';
 
 
 function App() {
 
   const [countriesLoading, setCountriesLoading] = useState(false);
+  const [filtersVisible, setFiltersVisible] = useState(false);
 
   return (
     <Provider store={store}>
@@ -24,8 +27,16 @@ function App() {
           initialColorMode: 'light',
         },
       })}>
-        <SearchBoxContainer setLoading={setCountriesLoading}/>
-        <CountriesContainer isLoading={countriesLoading}/>
+        <FiltersPopupContainer filtersVisible={filtersVisible} setFiltersVisibles={setFiltersVisible} />
+
+        <VStack
+          padding={8}
+          spacing={5}
+        >
+          <SearchBoxContainer setLoading={setCountriesLoading} filtersVisible={filtersVisible}
+                              setFiltersVisible={setFiltersVisible} />
+          <CountriesContainer isLoading={countriesLoading} setLoading={setCountriesLoading} />
+        </VStack>
       </ChakraProvider>
     </Provider>
   );

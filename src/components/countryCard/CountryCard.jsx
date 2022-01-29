@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Flex, Image, Text } from '@chakra-ui/react';
 import './CountryCard.css';
+import '../generics/generics.css'
 import {FaCity} from "react-icons/fa"
 import {IoPeople} from "react-icons/io5"
 import {GoGlobe} from "react-icons/go"
@@ -18,7 +19,7 @@ export const CountryCard = ({
       height={320}
       borderRadius={3}
       backgroundColor={'#fafafa'}
-      className={'countryCard'}
+      className={'countryCard zShadow'}
       cursor={'pointer'}
       overflow={'hidden'}
     >

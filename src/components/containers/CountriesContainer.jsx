@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
 import { CountryCard } from '../countryCard/CountryCard';
 import { useSelector } from 'react-redux';
-import { selectLoadedCountries } from '../../redux/selectors/loadedCountriesSelector';
+import { selectFilteredCountries, selectLoadedCountries } from '../../redux/selectors/loadedCountriesSelector';
 
 /**
  * Gets an array of country components and renders them
@@ -10,8 +10,13 @@ import { selectLoadedCountries } from '../../redux/selectors/loadedCountriesSele
  * @returns {JSX.Element}
  * @constructor
  */
-export const CountriesContainer = ({ isLoading }) => {
-  const countriesData = useSelector(selectLoadedCountries);
+export const CountriesContainer = ({ isLoading, setLoading }) => {
+  const countriesData = useSelector(selectFilteredCountries);
+
+  useEffect(() => {
+    setLoading(false)
+    console.log(countriesData)
+  }, [countriesData])
 
   return (
     <>
