@@ -1,3 +1,6 @@
+## Mr-Worldwide
+Tech stack: [React](https://github.com/facebook/react), [Chakra UI](https://github.com/chakra-ui/chakra-ui), [Redux](https://github.com/reduxjs/redux)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
