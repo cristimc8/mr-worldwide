@@ -1,17 +1,21 @@
 import { Badge, Flex } from '@chakra-ui/react';
 import React from 'react';
 
-export const BadgeGroup = ({ all, selected, setSelected, killOnSelect = false }) => {
+export const BadgeGroup = ({ all, selected, setSelected, killOnSelect = false, oneSelection = false }) => {
 
   const categories = all;
   // array of selected keys
 
   const selectCategory = (cat) => {
     // if it's already in the array we remove it
-    if (selected.includes(cat)) {
+    // but only if we allow more selections
+    if (selected.includes(cat) && !oneSelection) {
       let copyOfSelected = selected.filter(category => category !== cat);
       setSelected(copyOfSelected);
     } else {
+      if(oneSelection){
+        return setSelected([cat])
+      }
       setSelected([...selected, cat]);
     }
   };

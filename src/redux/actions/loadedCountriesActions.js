@@ -9,3 +9,8 @@ export const setCurrentFilteredCountries = (countries) => ({
   type: actionTypes.countries.loadCurrentFilteredCountries,
   payload: countries
 })
+
+export const setCurrentActiveCountriesSelection = (countries) => ({
+  type: actionTypes.countries.loadActiveCountriesSelection,
+  payload: countries
+})

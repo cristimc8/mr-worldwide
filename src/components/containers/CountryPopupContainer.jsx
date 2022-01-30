@@ -19,6 +19,7 @@ import { AiFillCompass } from 'react-icons/ai';
 import { BiLandscape } from 'react-icons/bi';
 import { BiTimeFive } from 'react-icons/bi';
 import { IoBarcodeOutline } from 'react-icons/io5';
+import { FaFontAwesomeFlag } from 'react-icons/fa';
 import { api } from '../../origins/api';
 import { formatCountriesData } from '../../utils/utils';
 
@@ -35,9 +36,8 @@ export const CountryPopupContainer = ({ passedCountry, modalOpen, setModalOpen, 
     fetch(`${api.countries.byCodes}${codes}`)
       .then(res => res.json())
       .then(body => {
-        setNeighbours(formatCountriesData(body));
-        setFoundNeighbours(true)
-
+        if(body.length > 0)
+          setNeighbours(formatCountriesData(body));
         setFoundNeighbours(true);
       });
   }, [passedCountry]);
@@ -88,6 +88,9 @@ export const CountryPopupContainer = ({ passedCountry, modalOpen, setModalOpen, 
                                     text={'Lat, Lng: ' + passedCountry.latLng[0] + ', ' + passedCountry.latLng[1]} />
                 <CountryCardInfoRow fontSize={24} icon={BiLandscape} text={'Area: ' + passedCountry.area} />
                 <CountryCardInfoRow fontSize={24} icon={BiTimeFive} text={'Timezone: ' + passedCountry.timeZone} />
+                <CountryCardInfoRow fontSize={24} icon={FaFontAwesomeFlag}
+                                    text={'Speaking: ' + passedCountry.allLanguages
+                                      .join(',').replace(/,/g, ', ')} />
               </VStack>
               <VStack>
                 <Text
@@ -99,7 +102,7 @@ export const CountryPopupContainer = ({ passedCountry, modalOpen, setModalOpen, 
                   return (
                     <>
                       {!foundNeighbours && (
-                          <SkeletonCircle key={i} />
+                        <SkeletonCircle key={i} />
                       )}
                       {foundNeighbours && (
                         <Text
@@ -109,9 +112,9 @@ export const CountryPopupContainer = ({ passedCountry, modalOpen, setModalOpen, 
                           color={'blue.500'}
                           key={i}
                           onClick={() => {
-                            setFoundNeighbours(false)
-                            setNeighbours([])
-                            setCurrentCountry(neighbours.at(i))
+                            setFoundNeighbours(false);
+                            setNeighbours([]);
+                            setCurrentCountry(neighbours.at(i));
                           }}
                         >
                           {neighbours[i] && neighbours.at(i).emoji} {neighbours[i] && neighbours.at(i).name}
