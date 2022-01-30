@@ -36,3 +36,29 @@ export const fetchCountriesByApiCall = (location, comparerFn) => {
       });
   });
 };
+
+
+export const calcTimeFromOffset = (offset) => {
+  // create Date object for current location
+  let d = new Date();
+
+  // convert to msec
+  // subtract local time zone offset
+  // get UTC time in msec
+  let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+
+  // create new Date object for different city
+  // using supplied offset
+  let nd = new Date(utc + (3600000*offset));
+
+  // return time as a string
+  return nd.toLocaleString();
+}
+
+export const prettyDate2 = (time) => {
+  let date = new Date(parseInt(time));
+  return date.toLocaleTimeString(navigator.language, {
+    hour: '2-digit',
+    minute:'2-digit'
+  });
+}
