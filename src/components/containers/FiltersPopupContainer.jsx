@@ -36,13 +36,15 @@ import {
   setUserFilteredRegions, setUserFilteredTimeZones,
 } from '../../redux/actions/filtersActions';
 import { setCurrentFilteredCountries } from '../../redux/actions/loadedCountriesActions';
-import { selectLoadedCountries } from '../../redux/selectors/loadedCountriesSelector';
+import { selectActiveCountries, selectLoadedCountries } from '../../redux/selectors/loadedCountriesSelector';
 
 export const FiltersPopupContainer = ({ filtersVisible, setFiltersVisibles }) => {
 
   const dispatch = useDispatch();
 
   const allCountries = useSelector(selectLoadedCountries);
+  const activeCountries = useSelector(selectActiveCountries)
+
   const allLanguages = useSelector(selectLanguages);
   const regions = useSelector(selectRegions);
   const timeZones = useSelector(selectTimeZones);
@@ -121,7 +123,9 @@ export const FiltersPopupContainer = ({ filtersVisible, setFiltersVisibles }) =>
                 <ModalCloseButton />
                 <ModalBody>
                   <Button onClick={() => {
-                    dispatch(setCurrentFilteredCountries(allCountries))
+                    if(activeCountries.length === 0)
+                      dispatch(setCurrentFilteredCountries({x: 'empty'}))
+                    else dispatch(setCurrentFilteredCountries(activeCountries))
                     setSelectedCurrencies([])
                     setSelectedTimezone(null)
                     setSelectedRegions([])

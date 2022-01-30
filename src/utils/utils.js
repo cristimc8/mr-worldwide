@@ -18,8 +18,13 @@ export const formatCountriesData = (rawData) => rawData.map(country => {
   };
 });
 
+const API_TIMEOUT = 4000;
+
 export const fetchCountriesByApiCall = (location, comparerFn) => {
   return new Promise(resolve => {
+    setTimeout(() => {
+      return resolve([])
+    }, API_TIMEOUT)
     fetch(location)
       .then(res => res.json())
       .then(body => {

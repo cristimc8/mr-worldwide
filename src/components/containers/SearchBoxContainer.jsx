@@ -4,6 +4,7 @@ import { Badge, Box, Flex, Icon, IconButton } from '@chakra-ui/react';
 import { searchCategory } from '../searchBar/searchCategories';
 import {VscSettings} from "react-icons/vsc"
 import '../generics/generics.css'
+import { BadgeGroup } from '../generics/BadgeGroup';
 
 
 /**
@@ -37,56 +38,10 @@ export const SearchBoxContainer = ({ setLoading, filtersVisible, setFiltersVisib
         />
       </Flex>
       <Box width={300}>
-        <BadgeGroup selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories} />
+        <BadgeGroup all={Object.keys(searchCategory)} selected={selectedCategories} setSelected={setSelectedCategories}
+          oneSelection={true}/>
+        {/*<BadgeGroup selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories} />*/}
       </Box>
-    </Flex>
-  );
-};
-
-const BadgeGroup = ({ selectedCategories, setSelectedCategories }) => {
-
-  const categories = Object.keys(searchCategory);
-  // array of selected keys
-
-  const selectCategory = (cat) => {
-    // if it's already in the array we remove it
-    if (selectedCategories.includes(cat)) {
-      let copyOfSelected = selectedCategories.filter(category => category !== cat);
-      setSelectedCategories(copyOfSelected);
-    } else {
-      setSelectedCategories([...selectedCategories, cat]);
-    }
-  };
-
-  const isSelected = (cat) => selectedCategories.includes(cat);
-
-  return (
-    <Flex
-      width={'100%'}
-      flexWrap={"wrap"}
-      justifyContent={'flex-start'}
-      align={'center'}
-      gap={3}
-    >
-      {categories.map((cat, i) => {
-        return (
-          <Badge
-            key={i}
-            colorScheme={isSelected(cat) ? 'green' : 'blue'}
-            paddingInline={3}
-            paddingBlock={1}
-            fontSize={12}
-            cursor={'pointer'}
-            borderRadius={'full'}
-            userSelect={'none'}
-            onClick={() => {
-              selectCategory(cat);
-            }}
-          >
-            {cat}
-          </Badge>
-        );
-      })}
     </Flex>
   );
 };

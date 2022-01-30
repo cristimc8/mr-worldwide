@@ -3,3 +3,6 @@ export const selectLoadedCountries = (state) =>
 
 export const selectFilteredCountries = (state) =>
   state.loadedCountriesReducer.filteredCountries
+
+export const selectActiveCountries = (state) =>
+  state.loadedCountriesReducer.activeCountriesSelection

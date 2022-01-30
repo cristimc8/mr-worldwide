@@ -8,7 +8,12 @@ const initialState = {
    */
   loadedCountries: [],
   filteredCountries: [],
+  activeCountriesSelection: []
 };
+
+// loadedCountries is all
+// filtered countries is what we display to the User
+// active countries selection is on what we apply filters on / search ; memory helper
 
 export const loadedCountriesReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -16,6 +21,8 @@ export const loadedCountriesReducer = (state = initialState, action) => {
       return { ...state, loadedCountries: action.payload }
     case actionTypes.countries.loadCurrentFilteredCountries:
       return {...state, filteredCountries: action.payload}
+    case actionTypes.countries.loadActiveCountriesSelection:
+      return {...state, activeCountriesSelection: action.payload}
     default:
       return state;
   }

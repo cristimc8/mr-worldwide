@@ -2,6 +2,7 @@ export const actionTypes = {
   countries: {
     loadCountries: 'LOAD_COUNTRIES',
     loadCurrentFilteredCountries: 'LOAD_FILTERED_COUNTRIES',
+    loadActiveCountriesSelection: 'LOAD_SELECTION_COUNTRIES'
   },
   regions: {
     loadRegions: 'LOAD_REGIONS',
